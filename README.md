@@ -21,4 +21,4 @@ The totals of the extracted data must be equal to the totals of the pivot tables
 
 `cd Spark-ETL-Raizen`
 
-`docker-compose up --build'
+`docker-compose up --build`
