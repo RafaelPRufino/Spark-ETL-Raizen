@@ -22,3 +22,7 @@ The totals of the extracted data must be equal to the totals of the pivot tables
 `cd Spark-ETL-Raizen`
 
 `docker-compose up --build`
+
+`paste the XLS into the folder shared/data`
+
+![data](https://github.com/RafaelPRufino/Spark-ETL-Raizen/blob/main/images/shared-data.PNG)
