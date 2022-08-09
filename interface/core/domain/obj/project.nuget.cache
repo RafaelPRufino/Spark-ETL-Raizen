@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "zixKsrvvTxkzyUWZtbCbX9421mw+UQQMhAzfB9R5V1mW/dXoaeRYL4IO7TeWqznsoIvOeuz74JaNMh8kuXCAIw==",
+  "success": true,
+  "projectFilePath": "C:\\git\\p5sso1l\\Spark\\interface\\core\\domain\\Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\rafael\\.nuget\\packages\\rabbitmq.client\\6.4.0\\rabbitmq.client.6.4.0.nupkg.sha512",
+    "C:\\Users\\rafael\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
+    "C:\\Users\\rafael\\.nuget\\packages\\system.threading.channels\\4.7.1\\system.threading.channels.4.7.1.nupkg.sha512"
+  ],
+  "logs": []
+}

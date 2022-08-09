@@ -1,0 +1,100 @@
+version: '3'
+
+services:
+  spark-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: spark-rabbitmq
+    hostname: spark-rabbitmq
+    restart: on-failure
+    ports:
+      - "9017:15672"
+      - "9018:5672"
+      - "9019:25676"
+    networks:
+      - spark
+
+  spark-database:
+    build: ./database
+    container_name: spark-database
+    hostname: spark-database
+    restart: on-failure
+    ports:
+      - "9016:3306"
+    networks:
+      - spark
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=True
+
+  spark-database-express:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: spark-database-express
+    hostname: spark-database-express
+    ports:
+      - 9015:80
+    networks:
+      - spark
+    environment:
+      PMA_HOST: spark-database
+      PMA_USER: root
+      PMA_PASSWORD:
+    depends_on:
+      - spark-database
+
+  spark-interface:
+    build: ./interface
+    container_name: spark-interface
+    hostname: spark-interface
+    restart: on-failure
+    volumes:
+      - ./shared/data:/data
+      - temp:/temp
+    networks:
+      - spark
+    environment:
+      - RABBIT_QUEUE=queue.watch
+      - RABBIT_HOST=spark-rabbitmq
+      - RABBIT_USER=guest
+      - RABBIT_PASSWORD=guest
+      - RABBIT_SLEEP=30000
+      - WATCH_SLEEP=30000
+      - WATCH_FOLDER_DATA=/data/
+      - WATCH_FOLDER_TEMP=/temp/raw
+    depends_on:
+      - spark-database
+      - spark-rabbitmq
+      - spark-database-express
+
+  spark-pipeline:
+    build: ./pipeline
+    container_name: spark-pipeline
+    hostname: spark-pipeline
+    restart: on-failure
+    volumes:
+      - ./shared/data:/data
+      - ./shared/drivers:/drivers
+      - temp:/temp
+    networks:
+      - spark
+    environment:
+      - RABBIT_QUEUE=queue.watch
+      - RABBIT_HOST=spark-rabbitmq
+      - RABBIT_USER=guest
+      - RABBIT_PASSWORD=guest
+      - RABBIT_SLEEP=30000
+      - WATCH_SLEEP=30000
+      - WATCH_FOLDER_DATA=/temp/raw/
+      - WATCH_FOLDER_TEMP=/temp/raw/
+      - WATCH_FOLDER_INPUT=/data/input/
+      - SQL_HOST=jdbc:mysql://spark-database/spark
+      - SQL_USER=root
+      - SQL_DRIVER=com.mysql.jdbc.Driver
+      - SQL_DRIVER_SRC=/drivers/java/mysql-connector-java-8.0.30.jar
+    depends_on:
+      - spark-rabbitmq
+      - spark-interface
+
+networks:
+  spark:
+    driver: bridge
+volumes:
+  temp:
